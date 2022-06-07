@@ -10,8 +10,11 @@ import ShazamKit
 
 class ViewController: UIViewController, SHSessionDelegate {
 
+    @IBOutlet weak var songInfoTxt: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        songInfoTxt.text = "recognizing..."
         recognizeSong()
     }
 
@@ -103,12 +106,18 @@ class ViewController: UIViewController, SHSessionDelegate {
             print(matchedMedia.artist ?? "no artist")
             print(matchedMedia.title)
             print(matchedMedia.artworkURL)
+            print(matchedMedia.songs)
+
+            DispatchQueue.main.async {
+                self.songInfoTxt.text = "\(matchedMedia.artist!) - \"\(matchedMedia.title!)\""
+            }
         }
     }
 
     func session(_ session: SHSession, didNotFindMatchFor signature: SHSignature, error: Error?) {
         if let error = error {
             print(error)
+            songInfoTxt.text = error.localizedDescription
         }
     }
 }
